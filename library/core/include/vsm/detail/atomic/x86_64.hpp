@@ -127,6 +127,27 @@ public:
 		return cmpxchg16(*m_object, expected, desired);
 	}
 
+
+#if __cpp_lib_atomic_wait
+	vsm_detail_atomic_inline void wait(
+		T const& old_value,
+		std::memory_order const order) const noexcept
+	{
+		std::atomic_ref(*m_object).wait(old_value, order);
+	}
+
+	vsm_detail_atomic_inline void notify_one() const noexcept
+	{
+		std::atomic_ref(*m_object).notify_one();
+	}
+
+	vsm_detail_atomic_inline void notify_all() const noexcept
+	{
+		std::atomic_ref(*m_object).notify_all();
+	}
+#endif // __cpp_lib_atomic_wait
+
+
 	vsm_clang_diagnostic(pop)
 
 #undef vsm_detail_atomic_inline

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 	<Type Name="vsm::detail::pointer_tag_pair&lt;*&gt;">
-		<DisplayString>{{{($T1)(m_value &amp; ptr_mask)}, {($T2)(m_value &amp; tag_mask)}}}</DisplayString>
+		<DisplayString>{{{(pointer_type)(m_value &amp; ptr_mask)}, {(tag_type)(m_value &amp; tag_mask)}}}</DisplayString>
 		<Expand>
-			<Item Name="[pointer]">($T1*)(m_value &amp; ptr_mask)</Item>
-			<Item Name="[tag]">($T2)(m_value &amp; tag_mask)</Item>
+			<Item Name="[pointer]">(pointer_type)(m_value &amp; ptr_mask)</Item>
+			<Item Name="[tag]">(tag_type)(m_value &amp; tag_mask)</Item>
 		</Expand>
 	</Type>
-	<Type Name="vsm::detail::tag_ptr&lt;*&gt;">
-		<DisplayString>{{{($T1*)(m_value &amp; ptr_mask)}, {($T2)(m_value &amp; tag_mask)}}}</DisplayString>
+	<Type Name="vsm::detail::tagged_ptr&lt;*&gt;">
+		<DisplayString>{{{(element_type*)(m_value &amp; ptr_mask)}, {(tag_type)(m_value &amp; tag_mask)}}}</DisplayString>
 		<Expand>
-			<Item Name="[ptr]">($T1*)(m_value &amp; ptr_mask)</Item>
-			<Item Name="[tag]">($T2)(m_value &amp; tag_mask)</Item>
+			<Item Name="[ptr]">(element_type*)(m_value &amp; ptr_mask)</Item>
+			<Item Name="[tag]">(tag_type)(m_value &amp; tag_mask)</Item>
 		</Expand>
 	</Type>
 </AutoVisualizer>

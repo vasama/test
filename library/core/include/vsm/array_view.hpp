@@ -13,10 +13,10 @@ template<non_cvref T>
 class array_view;
 
 template<typename View, vsm::non_cvref T>
-class array_view_base : public detail::_span<View, T const>
+class array_view_base : public detail::span_base<View, T const>
 {
 public:
-	using detail::_span<View, T const>::_span;
+	using detail::span_base<View, T const>::span_base;
 
 	[[nodiscard]] friend constexpr bool operator==(View const& lhs, View const& rhs)
 	{

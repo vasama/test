@@ -10,7 +10,7 @@
     <Expand>
       <Item Name="[capacity]" ExcludeView="simple">m_capacity</Item>
       <CustomListItems>
-        <Variable Name="p_slot" InitialValue="($T1*)get_ptr()" />
+        <Variable Name="p_slot" InitialValue="(value_type*)get_ptr()" />
         <Variable Name="p_ctrl" InitialValue="(uint8_t*)(p_slot + m_capacity)" />
 
         <Size>m_size</Size>
@@ -33,7 +33,7 @@
       <Item Name="[capacity]" ExcludeView="simple">(m_hash_mask + 1) * 3 / 4</Item>
       <ArrayItems>
         <Size>m_size</Size>
-        <ValuePointer>($T1*)(get_ptr() + m_hash_mask + 1)</ValuePointer>
+        <ValuePointer>(value_type*)(get_ptr() + m_hash_mask + 1)</ValuePointer>
       </ArrayItems>
     </Expand>
   </Type>

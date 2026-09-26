@@ -68,6 +68,22 @@ public:
 		auto const it = HashTableBase::find(key);
 		return it != HashTableBase::end() ? &it->value : nullptr;
 	}
+	
+	template<detail::hash_table_key<HashTableBase> K>
+	[[nodiscard]] mapped_type& at_unchecked(K const& key)
+	{
+		auto const it = HashTableBase::find(key);
+		vsm_assert(it != HashTableBase::end());
+		return it->value;
+	}
+
+	template<detail::hash_table_key<HashTableBase> K>
+	[[nodiscard]] mapped_type const& at_unchecked(K const& key) const
+	{
+		auto const it = HashTableBase::find(key);
+		vsm_assert(it != HashTableBase::end());
+		return it->value;
+	}
 
 	template<detail::hash_table_key<HashTableBase> K>
 	[[nodiscard]] size_t count(K const& key) const

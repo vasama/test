@@ -75,13 +75,26 @@ template<character Char>
 }
 
 template<character Char>
-[[nodiscard]] constexpr bool ascii_is_punctuation(Char character) noexcept;
+[[nodiscard]] constexpr bool ascii_is_punctuation(Char const character) noexcept
+{
+	return
+		(static_cast<Char>('!') <= character && character <= static_cast<Char>('/')) ||
+		(static_cast<Char>(':') <= character && character <= static_cast<Char>('@')) ||
+		(static_cast<Char>('[') <= character && character <= static_cast<Char>('`')) ||
+		(static_cast<Char>('{') <= character && character <= static_cast<Char>('~'));
+}
 
 template<character Char>
-[[nodiscard]] constexpr bool ascii_is_graphic(Char character) noexcept;
+[[nodiscard]] constexpr bool ascii_is_graphic(Char const character) noexcept
+{
+	return ascii_is_alphanumeric(character) || ascii_is_punctuation(character);
+}
 
 template<character Char>
-[[nodiscard]] constexpr bool ascii_is_printing(Char character) noexcept;
+[[nodiscard]] constexpr bool ascii_is_printing(Char const character) noexcept
+{
+	return ascii_is_graphic(character) || character == static_cast<Char>(' ');
+}
 
 template<character Char>
 [[nodiscard]] constexpr bool ascii_is_horizontal_whitespace(Char const character) noexcept
