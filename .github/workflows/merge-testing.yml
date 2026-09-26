@@ -1,0 +1,14 @@
+name: Merge check
+
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  cxx-check-branch:
+    if: 
+    uses: vasama/actions/.github/workflows/cxx-check-branch.yml@main
+    with:
+      setup: .github/Setup-CxxProject.ps1
+      base_ref: ${{ inputs.base_ref || github.event.merge_group.base_ref }}

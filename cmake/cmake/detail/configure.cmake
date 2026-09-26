@@ -310,7 +310,7 @@ function(vsm_add_executable name)
 	if(NOT VSM_OPT_INTERNAL)
 		vsm_add_cmake_package_setup(
 			NAME vsm_import_executables
-			INCLUDE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/import_executable_v1.cmake"
+			INCLUDE "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/scripts/import_executable_v1.cmake"
 			CONTENT "vsm_detail_import_executable_v1(\"${name}\" \"${executable_name}\")\n"
 		)
 	endif()

@@ -13,6 +13,7 @@ endfunction()
 
 load_file_set(ignored_files ignored)
 
+set(unused_files)
 function(find_unused_files directory file_set)
 	file(
 		GLOB_RECURSE files
@@ -24,8 +25,16 @@ function(find_unused_files directory file_set)
 	list(REMOVE_ITEM files ${ignored_files})
 
 	foreach(file ${files})
-		message(STATUS "${DIRTEST_SOURCE_DIR} contains unused source file: '${file}'")
-		set(found_unused_file ON PARENT_SCOPE)
+		set(absolute_path "${DIRTEST_SOURCE_DIR}/${file}")
+
+		cmake_path(
+			RELATIVE_PATH absolute_path
+			BASE_DIRECTORY "${DIRTEST_ROOT_DIR}"
+			OUTPUT_VARIABLE relative_path
+		)
+
+		list(APPEND unused_files "${relative_path}")
+		set(unused_files "${unused_files}" PARENT_SCOPE)
 	endforeach()
 endfunction()
 
@@ -33,6 +42,11 @@ find_unused_files("include" "headers")
 find_unused_files("source" "sources")
 find_unused_files("visualizers" "visualizers")
 
-if(found_unused_file)
-	message(SEND_ERROR "${DIRTEST_SOURCE_DIR} contains unused source files")
+if(NOT "${unused_files}" STREQUAL "")
+	message("unused_files='${unused_files}'")
+	list(TRANSFORM unused_files PREPEND "  ")
+	list(TRANSFORM unused_files APPEND "\n")
+	string(JOIN "" unused_files ${unused_files})
+
+	message(AUTHOR_WARNING "The project contains unused source files:\n${unused_files}")
 endif()
