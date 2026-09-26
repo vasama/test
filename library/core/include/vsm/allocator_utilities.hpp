@@ -2,6 +2,7 @@
 
 #include <vsm/allocator.hpp>
 #include <vsm/exceptions.hpp>
+#include <vsm/uninitialized.hpp>
 
 #include <ranges>
 #include <span>
@@ -19,7 +20,56 @@ template<non_decaying T, memory_resource MemoryResource>
 
 	vsm_except_try
 	{
+		std::uninitialized_value_construct_n(data, size);
+	}
+	vsm_except_catch (...)
+	{
+		memory_resource.deallocate(storage);
+	}
+
+	return std::span<T>(data, size);
+}
+
+template<non_decaying T, memory_resource MemoryResource>
+[[nodiscard]] std::span<T> new_array_via(
+	MemoryResource&& memory_resource,
+	size_t const size,
+	uninitialized_t)
+{
+	vsm::allocation const storage = vsm::allocate_or_throw(
+		memory_resource,
+		size * sizeof(T));
+
+	T* const data = static_cast<T*>(storage.storage);
+
+	vsm_except_try
+	{
 		std::uninitialized_default_construct_n(data, size);
+	}
+	vsm_except_catch (...)
+	{
+		memory_resource.deallocate(storage);
+	}
+
+	return std::span<T>(data, size);
+}
+
+template<non_decaying T, memory_resource MemoryResource>
+	requires std::copyable<T>
+[[nodiscard]] std::span<T> new_array_via(
+	MemoryResource&& memory_resource,
+	size_t const size,
+	T const& value)
+{
+	vsm::allocation const storage = vsm::allocate_or_throw(
+		memory_resource,
+		size * sizeof(T));
+
+	T* const data = static_cast<T*>(storage.storage);
+
+	vsm_except_try
+	{
+		std::uninitialized_fill_n(data, size, value);
 	}
 	vsm_except_catch (...)
 	{
@@ -56,12 +106,16 @@ template<memory_resource MemoryResource, std::ranges::sized_range Range>
 	return std::span<value_type>(data, size);
 }
 
-template<memory_resource MemoryResource, typename Char>
-[[nodiscard]] std::basic_string_view<Char> new_string_via(
+template<memory_resource MemoryResource, std::ranges::contiguous_range Range>
+	requires character<std::ranges::range_value_t<Range>>
+[[nodiscard]] std::basic_string_view<std::ranges::range_value_t<Range>> new_string_via(
 	MemoryResource&& memory_resource,
-	std::basic_string_view<Char> const string)
+	Range&& range)
 {
-	return std::basic_string_view<Char>(new_array_via(vsm_forward(memory_resource), string));
+	return std::basic_string_view<std::ranges::range_value_t<Range>>(
+		new_array_via(
+			vsm_forward(memory_resource),
+			vsm_forward(range)));
 }
 
 } // namespace vsm

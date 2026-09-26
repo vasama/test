@@ -9,7 +9,7 @@
 namespace vsm::detail {
 
 template<typename Span, typename T>
-class _span
+class span_base
 {
 	using span_type = std::span<T>;
 
@@ -33,13 +33,16 @@ public:
 	template<no_cvref_of<Span>... Args>
 		requires std::constructible_from<span_type, Args...>
 	explicit(!implicitly_constructible_from<span_type, Args...>)
-	vsm_always_inline _span(Args&&... args)
+	vsm_always_inline span_base(Args&&... args) noexcept
 		: m_span(vsm_forward(args)...)
 	{
 	}
 
-	_span(_span const&) = default;
-	_span& operator=(_span const&) = default;
+	span_base(span_base&&) = default;
+	span_base& operator=(span_base&&) = default;
+
+	span_base(span_base const&) = default;
+	span_base& operator=(span_base const&) = default;
 
 	[[nodiscard]] vsm_always_inline iterator begin() const
 	{

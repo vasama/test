@@ -10,7 +10,7 @@
       <Item Name="[capacity]" ExcludeView="simple">m_capacity</Item>
       <ArrayItems>
         <Size>m_size</Size>
-        <ValuePointer>($T1*)get_ptr()</ValuePointer>
+        <ValuePointer>(value_type*)get_ptr()</ValuePointer>
       </ArrayItems>
     </Expand>
   </Type>

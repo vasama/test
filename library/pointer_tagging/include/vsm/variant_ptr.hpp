@@ -5,7 +5,12 @@
 #include <vsm/type_list.hpp>
 
 namespace vsm {
-namespace detail::_variant_ptr {
+namespace detail {
+
+template<typename T>
+struct _prop_cv_traits;
+
+namespace _variant_ptr {
 
 template<typename T, typename... Ts>
 static constexpr bool is_uniquely_convertible_to_v = (std::is_convertible_v<T*, Ts*> + ...) == 1;
@@ -62,6 +67,13 @@ public:
 	{
 	}
 
+	template<typename... Us>
+		requires (std::is_convertible_v<Us**, Ts* const*> && ...)
+	basic_variant_ptr(basic_variant_ptr<Base, Us...> const& other)
+		: m_ptr(other.m_ptr)
+	{
+	}
+
 
 	[[nodiscard]] size_t index() const noexcept
 	{
@@ -105,6 +117,10 @@ public:
 	}
 
 	[[nodiscard]] friend bool operator==(basic_variant_ptr const&, basic_variant_ptr const&) = default;
+
+private:
+	template<typename, typename...>
+	friend class basic_variant_ptr;
 };
 
 template<typename Base, typename... Ts>
@@ -131,7 +147,29 @@ template<typename T, typename Base, typename... Ts>
 		: const_cast<T*>(static_cast<T const*>(ptr.get()));
 }
 
-} // namespace detail::_variant_ptr
+} // namespace _variant_ptr
+
+template<typename Base, typename... Ts>
+struct _prop_cv_traits<_variant_ptr::basic_variant_ptr<Base, Ts...>>
+{
+	using get_type = _variant_ptr::basic_variant_ptr<Base, Ts...>;
+	using get_const_type = _variant_ptr::basic_variant_ptr<Base, Ts const...>;
+
+	using difference_type = typename std::pointer_traits<Base*>::difference_type;
+	using size_type = difference_type;
+
+	static get_type get(_variant_ptr::basic_variant_ptr<Base, Ts...> const& ptr)
+	{
+		return ptr;
+	}
+
+	static get_const_type get_const(_variant_ptr::basic_variant_ptr<Base, Ts...> const& ptr)
+	{
+		return ptr;
+	}
+};
+
+} // namespace detail
 
 template<vsm::non_cvref Base, vsm::non_ref... Ts>
 	requires (sizeof...(Ts) > 0)

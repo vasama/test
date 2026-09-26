@@ -161,6 +161,8 @@ public:
 	}
 
 	using base::is_lock_free;
+	using base::notify_one;
+	using base::notify_all;
 
 #define vsm_detail_fetch_mutate_category const
 #define vsm_detail_fetch_mutate_ref (static_cast<base const&>(*this))
@@ -185,6 +187,8 @@ public:
 	}
 
 	using base::is_lock_free;
+	using base::notify_one;
+	using base::notify_all;
 
 // NOLINTNEXTLINE(bugprone-macro-parentheses)
 #define vsm_detail_fetch_mutate_category &

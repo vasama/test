@@ -138,6 +138,13 @@ struct hash_append_cpo
 		hash_append_cpo()(state, std::ranges::begin(range), std::ranges::end(range));
 	}
 
+	template<typename State, hash_appendable_to<State> First, hash_appendable_to<State> Second>
+	friend void tag_invoke(hash_append_cpo, State& state, std::pair<First, Second> const& pair)
+	{
+		hash_append_cpo()(state, pair.first);
+		hash_append_cpo()(state, pair.second);
+	}
+
 	template<typename State, hash_appendable_to<State>... Ts>
 	friend void tag_invoke(hash_append_cpo, State& state, std::tuple<Ts...> const& tuple)
 	{

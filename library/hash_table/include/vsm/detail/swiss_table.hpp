@@ -1174,7 +1174,7 @@ struct _swiss_table_iterator_n_base
 	template<size_t SizeofT>
 	void skip_free_slots() noexcept
 	{
-		while (*m_ctrl < _swiss_table_ctrl::end)
+		while (_swiss_table_ctrl_get(m_ctrl, 0) < _swiss_table_ctrl::end)
 		{
 			auto const shift = _swiss_table_group(m_ctrl).count_leading_free_or_end();
 
@@ -1182,7 +1182,7 @@ struct _swiss_table_iterator_n_base
 			m_ctrl += shift;
 		}
 
-		if (*m_ctrl == _swiss_table_ctrl::end)
+		if (_swiss_table_ctrl_get(m_ctrl, 0) == _swiss_table_ctrl::end)
 		{
 			m_data = nullptr;
 		}

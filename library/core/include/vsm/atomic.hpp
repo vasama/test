@@ -97,6 +97,24 @@ public:
 		return base::compare_exchange_strong(expected, desired, success, failure);
 	}
 
+
+#if __cpp_lib_atomic_wait
+	vsm_always_inline void wait(T const& old_value, std::memory_order const order) const noexcept
+	{
+		base::wait(old_value, order);
+	}
+
+	vsm_always_inline void notify_one() const noexcept
+	{
+		base::notify_one();
+	}
+
+	vsm_always_inline void notify_all() const noexcept
+	{
+		base::notify_all();
+	}
+#endif // __cpp_lib_atomic_wait
+
 private:
 	friend atomic_ref<T>;
 };
@@ -179,6 +197,24 @@ public:
 	{
 		return ref_type(m_storage).compare_exchange_strong(expected, desired, success, failure);
 	}
+
+
+#if __cpp_lib_atomic_wait
+	vsm_always_inline void wait(T const& old_value, std::memory_order const order) const noexcept
+	{
+		ref_type(m_storage).wait(old_value, order);
+	}
+
+	vsm_always_inline void notify_one() noexcept
+	{
+		ref_type(m_storage).notify_one();
+	}
+
+	vsm_always_inline void notify_all() noexcept
+	{
+		ref_type(m_storage).notify_all();
+	}
+#endif // __cpp_lib_atomic_wait
 
 private:
 	friend _atomic_ref<T>;

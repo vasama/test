@@ -49,6 +49,13 @@ vsm_always_inline void store(value_type const new_value, std::memory_order const
 		failure);
 }
 
+vsm_always_inline void wait(
+	value_type const old_value,
+	std::memory_order const order) vsm_detail_fetch_mutate_category noexcept
+{
+	return vsm_detail_fetch_mutate_ref.wait(old_value.m_value, order);
+}
+
 #define vsm_detail_fetch_mutate_pointer(operation) \
 	[[nodiscard]] value_type operation ## _pointer( \
 		ptrdiff_t const offset, \
